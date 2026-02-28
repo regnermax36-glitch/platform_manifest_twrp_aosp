@@ -1132,15 +1132,6 @@
   <project path="device/samsung/zflip5-sepolicy" name="samsung/device/zflip5-sepolicy" remote="maxregner-samsung" groups="device,zflip5,maxregner" revision="maxregneros-secure" />
   <project path="device/samsung/common" name="samsung/device/common" remote="maxregner-samsung" groups="device,samsung,maxregner" revision="maxregneros-common" />
   <project path="device/samsung/sepolicy" name="samsung/device/sepolicy" remote="maxregner-samsung" groups="device,samsung,maxregner" revision="maxregneros-sepolicy" />
-
-  <!-- Build System -->
-  <remove-project name="platform/build/soong" />
-  <project path="build/soong" name="maxregneros/build/soong" groups="pdk,tradefed" remote="maxregner" revision="flip5-enhanced" >
-    <linkfile src="root.bp" dest="Android.bp" />
-    <linkfile src="bootstrap.bash" dest="bootstrap.bash" />
-    <copyfile src="maxregner_soong_config.mk" dest="build/soong/maxregner_config.mk" />
-  </project>
-
   <!-- Runtime -->
   <remove-project name="platform/art" />
   <project path="art" name="maxregneros/art" groups="pdk" remote="maxregner" revision="flip5-optimized" />
