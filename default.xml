@@ -6,10 +6,10 @@
            review="https://android-review.googlesource.com/" />
   <default revision="refs/tags/android-12.1.0_r4"
            remote="aosp"
-           sync-j="8" />
+           sync-j="4" />
 
   <superproject name="platform/superproject" remote="aosp" revision="android-12.1.0_r4" />
-  <contactinfo bugurl="https://bugs.maxregneros.com/recovery" />
+  <contactinfo bugurl="go/repo-bug" />
 
   <project path="build/make" name="platform/build" groups="pdk" >
     <copyfile src="core/root.mk" dest="Makefile" />
@@ -1106,11 +1106,7 @@
   <repo-hooks in-project="platform/tools/repohooks" enabled-list="pre-upload" />
 
   <!-- FIRST: Add/Replace repos and particular directories needed by TWRP -->
-  <include 
-
-  <!-- ============================================ -->
-  <!-- maxregnerOS CUSTOM REMOTES                  -->
-  <!-- ============================================ -->
+  <include name="twrp-default.xml"/>
 
   <remote  name="maxregner"
            fetch="https://gitlab.maxregneros.com"
@@ -1122,19 +1118,22 @@
            review="https://gitlab.maxregneros.com/samsung/review"
            revision="maxregneros-flip5-stable" />
 
-  <!-- ============================================ -->
-  <!-- maxregnerOS PROJECT METADATA                -->
-  <!-- ============================================ -->
+  <!-- maxregnerOS: Samsung Galaxy Z Flip5 Transformation -->
+  <!-- Transforms OneUI into maxregnerOS UI with Quantum Framework -->
 
   <project path="maxregner/manifest" name="maxregneros/manifest" remote="maxregner" revision="main">
     <copyfile src="mrrecovery_build.sh" dest="build-mrrecovery.sh" />
     <copyfile src="flip5_config.mk" dest="device_config.mk" />
   </project>
 
-  <!-- ============================================ -->
-  <!-- maxregnerOS BUILD SYSTEM OVERRIDES          -->
-  <!-- ============================================ -->
+  <!-- Device: Samsung Galaxy Z Flip5 -->
+  <project path="device/samsung/zflip5" name="samsung/device/zflip5" remote="maxregner-samsung" groups="device,zflip5,maxregner" revision="maxregneros-v2.1" />
+  <project path="device/samsung/zflip5-kernel" name="samsung/device/zflip5-kernel" remote="maxregner-samsung" groups="device,zflip5,maxregner" clone-depth="1" revision="maxregner-kernel-5.15" />
+  <project path="device/samsung/zflip5-sepolicy" name="samsung/device/zflip5-sepolicy" remote="maxregner-samsung" groups="device,zflip5,maxregner" revision="maxregneros-secure" />
+  <project path="device/samsung/common" name="samsung/device/common" remote="maxregner-samsung" groups="device,samsung,maxregner" revision="maxregneros-common" />
+  <project path="device/samsung/sepolicy" name="samsung/device/sepolicy" remote="maxregner-samsung" groups="device,samsung,maxregner" revision="maxregneros-sepolicy" />
 
+  <!-- Build System -->
   <remove-project name="platform/build/soong" />
   <project path="build/soong" name="maxregneros/build/soong" groups="pdk,tradefed" remote="maxregner" revision="flip5-enhanced" >
     <linkfile src="root.bp" dest="Android.bp" />
@@ -1142,36 +1141,18 @@
     <copyfile src="maxregner_soong_config.mk" dest="build/soong/maxregner_config.mk" />
   </project>
 
-  <!-- ============================================ -->
-  <!-- maxregnerOS RUNTIME OVERRIDES               -->
-  <!-- ============================================ -->
-
+  <!-- Runtime -->
   <remove-project name="platform/art" />
   <project path="art" name="maxregneros/art" groups="pdk" remote="maxregner" revision="flip5-optimized" />
 
   <remove-project name="platform/bionic" />
   <project path="bionic" name="maxregneros/bionic" groups="pdk" remote="maxregner" revision="mnfs-integration" />
 
+  <!-- Recovery -->
   <remove-project name="platform/bootable/recovery" />
   <project path="bootable/recovery" name="maxregneros/bootable/recovery" groups="pdk" remote="maxregner" revision="mrrecovery-flip5" />
 
-  <!-- ============================================ -->
-  <!-- maxregnerOS DEVICE SUPPORT (Galaxy Z Flip5) -->
-  <!-- ============================================ -->
-
-  <!-- Samsung Galaxy Z Flip5 Specific -->
-  <project path="device/samsung/zflip5" name="samsung/device/zflip5" remote="maxregner-samsung" groups="device,zflip5,maxregner" revision="maxregneros-v2.1" />
-  <project path="device/samsung/zflip5-kernel" name="samsung/device/zflip5-kernel" remote="maxregner-samsung" groups="device,zflip5,maxregner" clone-depth="1" revision="maxregner-kernel-5.15" />
-  <project path="device/samsung/zflip5-sepolicy" name="samsung/device/zflip5-sepolicy" remote="maxregner-samsung" groups="device,zflip5,maxregner" revision="maxregneros-secure" />
-
-  <!-- maxregnerOS Common Samsung Support -->
-  <project path="device/samsung/common" name="samsung/device/common" remote="maxregner-samsung" groups="device,samsung,maxregner" revision="maxregneros-common" />
-  <project path="device/samsung/sepolicy" name="samsung/device/sepolicy" remote="maxregner-samsung" groups="device,samsung,maxregner" revision="maxregneros-sepolicy" />
-
-  <!-- ============================================ -->
-  <!-- maxregnerOS FRAMEWORK OVERRIDES             -->
-  <!-- ============================================ -->
-
+  <!-- Framework -->
   <remove-project name="platform/frameworks/av" />
   <project path="frameworks/av" name="maxregneros/frameworks/av" groups="pdk" remote="maxregner" revision="flip5-media" />
 
@@ -1187,10 +1168,7 @@
   <remove-project name="platform/frameworks/opt/net/wifi" />
   <project path="frameworks/opt/net/wifi" name="maxregneros/frameworks/opt/net/wifi" groups="pdk" remote="maxregner" revision="maxregneros-connectivity" />
 
-  <!-- ============================================ -->
-  <!-- maxregnerOS APPLICATION OVERRIDES           -->
-  <!-- ============================================ -->
-
+  <!-- Apps -->
   <remove-project name="platform/packages/apps/Bluetooth" />
   <project path="packages/apps/Bluetooth" name="maxregneros/packages/apps/Bluetooth" groups="pdk-cw-fs,pdk-fs" remote="maxregner" revision="maxregneros-bt" />
 
@@ -1209,20 +1187,14 @@
   <remove-project name="platform/packages/apps/WallpaperPicker2" />
   <project path="packages/apps/WallpaperPicker2" name="maxregneros/packages/apps/WallpaperPicker2" groups="pdk-fs" remote="maxregner" revision="quantum-wallpapers" />
 
-  <!-- ============================================ -->
-  <!-- maxregnerOS MODULE OVERRIDES                -->
-  <!-- ============================================ -->
-
+  <!-- Modules -->
   <remove-project name="platform/packages/modules/Connectivity" />
   <project path="packages/modules/Connectivity" name="maxregneros/packages/modules/Connectivity" groups="pdk-cw-fs,pdk-fs" remote="maxregner" revision="maxregneros-net" />
 
   <remove-project name="platform/packages/modules/Wifi" />
   <project path="packages/modules/Wifi" name="maxregneros/packages/modules/Wifi" groups="pdk-cw-fs,pdk-fs" remote="maxregner" revision="maxregneros-wifi" />
 
-  <!-- ============================================ -->
-  <!-- maxregnerOS SYSTEM OVERRIDES                -->
-  <!-- ============================================ -->
-
+  <!-- System -->
   <remove-project name="platform/system/bt" />
   <project path="system/bt" name="maxregneros/system/bt" groups="pdk" remote="maxregner" revision="maxregneros-bt-stack" />
 
@@ -1235,172 +1207,57 @@
   <remove-project name="platform/system/vold" />
   <project path="system/vold" name="maxregneros/system/vold" groups="pdk" remote="maxregner" revision="mnfs-vold" />
 
-  <!-- ============================================ -->
-  <!-- maxregnerOS ADDITIONAL COMPONENTS           -->
-  <!-- ============================================ -->
-
-  <!-- maxregnerOS Nebula FileSystem (mNFS) Tools -->
+  <!-- maxregnerOS Features -->
   <project path="maxregner/mnfs/tools" name="maxregneros/mnfs-tools" remote="maxregner" groups="maxregner,mnfs" revision="v2.1-stable" />
   <project path="maxregner/mnfs/fuse" name="maxregneros/mnfs-fuse" remote="maxregner" groups="maxregner,mnfs" revision="android-integration" />
-
-  <!-- maxregnerOS Quantum UI Resources -->
   <project path="maxregner/quantum/res" name="maxregneros/quantum-resources" remote="maxregner" groups="maxregner,ui" revision="flip5-assets" />
   <project path="maxregner/quantum/fonts" name="maxregneros/quantum-fonts" remote="maxregner" groups="maxregner,ui" revision="main" />
   <project path="maxregner/quantum/sounds" name="maxregneros/quantum-audio" remote="maxregner" groups="maxregner,ui" revision="v2.1" />
-
-  <!-- maxregnerOS AI Engine for Flip5 -->
   <project path="maxregner/ai/engine" name="maxregneros/ai-engine" remote="maxregner" groups="maxregner,ai" revision="flip5-optimized" />
   <project path="maxregner/ai/models" name="maxregneros/ai-models" remote="maxregner" groups="maxregner,ai" clone-depth="1" revision="v2.1" />
-
-  <!-- maxregnerOS Security Layer (mSec) -->
   <project path="maxregner/msec/core" name="maxregneros/msec-core" remote="maxregner" groups="maxregner,security" revision="v2.1" />
   <project path="maxregner/msec/keystore" name="maxregneros/msec-keystore" remote="maxregner" groups="maxregner,security" revision="android-12.1" />
-
-  <!-- maxregnerOS Power Management (mPower) -->
   <project path="maxregner/mpower/core" name="maxregneros/mpower-core" remote="maxregner" groups="maxregner,power" revision="flip5-battery" />
   <project path="maxregner/mpower/profiles" name="maxregneros/mpower-profiles" remote="maxregner" groups="maxregner,power" revision="z-flip5" />
-
-  <!-- maxregnerOS Foldable Display Optimizations -->
   <project path="maxregner/foldable/hinge" name="maxregneros/foldable-hinge" remote="maxregner" groups="maxregner,foldable" revision="z-flip5" />
   <project path="maxregner/foldable/multitasking" name="maxregneros/foldable-multitasking" remote="maxregner" groups="maxregner,foldable" revision="v2.1" />
   <project path="maxregner/foldable/continuity" name="maxregneros/foldable-continuity" remote="maxregner" groups="maxregner,foldable" revision="main" />
-
-  <!-- maxregnerOS Connectivity Suite -->
   <project path="maxregner/connectivity/5g" name="maxregneros/connectivity-5g" remote="maxregner" groups="maxregner,connectivity" revision="snapdragon-8-gen-2" />
   <project path="maxregner/connectivity/wifi7" name="maxregneros/connectivity-wifi7" remote="maxregner" groups="maxregner,connectivity" revision="main" />
   <project path="maxregner/connectivity/uwb" name="maxregneros/connectivity-uwb" remote="maxregner" groups="maxregner,connectivity" revision="z-flip5" />
-
-  <!-- maxregnerOS Media Engine -->
   <project path="maxregner/media/codecs" name="maxregneros/media-codecs" remote="maxregner" groups="maxregner,media" revision="v2.1" />
   <project path="maxregner/media/dolby" name="maxregneros/media-dolby" remote="maxregner" groups="maxregner,media" revision="atmos-mobile" />
-
-  <!-- maxregnerOS Developer Tools -->
   <project path="maxregner/dev/mrrecovery-builder" name="maxregneros/mrrecovery-builder" remote="maxregner" groups="maxregner,devtools" revision="v2.1">
     <copyfile src="build.sh" dest="build-mrrecovery.sh" />
     <copyfile src="flip5.config" dest="device.config" />
   </project>
-
-  <!-- maxregnerOS Documentation -->
   <project path="maxregner/docs" name="maxregneros/documentation" remote="maxregner" groups="maxregner,docs" revision="v2.1" />
-
-name="twrp-default.xml"/>
-
-  <!-- ============================================ -->
-  <!-- maxregnerOS RECOVERY FEATURES               -->
-  <!-- ============================================ -->
-
-  <!-- maxregnerOS Recovery Kernel Modules -->
-  <project path="maxregner/recovery/kernel-modules" name="maxregneros/recovery-kernel-modules" remote="maxregner" groups="maxregner,recovery" revision="flip5-modules" />
-
-  <!-- maxregnerOS Recovery UI Theme -->
-  <project path="maxregner/recovery/theme" name="maxregneros/recovery-theme" remote="maxregner" groups="maxregner,recovery" revision="quantum-dark" />
-
-  <!-- maxregnerOS Touchscreen Drivers for Flip5 -->
-  <project path="maxregner/drivers/touchscreen" name="maxregneros/drivers-touchscreen" remote="maxregner" groups="maxregner,drivers" revision="z-flip5" />
-
-  <!-- maxregnerOS Display Drivers -->
-  <project path="maxregner/drivers/display" name="maxregneros/drivers-display" remote="maxregner" groups="maxregner,drivers" revision="foldable-amoled" />
-
-  <!-- maxregnerOS Battery Management -->
-  <project path="maxregner/power/battery" name="maxregneros/power-battery" remote="maxregner" groups="maxregner,power" revision="dual-cell-flip5" />
-
-  <!-- maxregnerOS Thermal Management -->
-  <project path="maxregner/power/thermal" name="maxregneros/power-thermal" remote="maxregner" groups="maxregner,power" revision="snapdragon-8-gen-2" />
-
-  <!-- maxregnerOS Performance Profiles -->
-  <project path="maxregner/performance/profiles" name="maxregneros/performance-profiles" remote="maxregner" groups="maxregner,performance" revision="gaming-ultra" />
-  <project path="maxregner/performance/governors" name="maxregneros/performance-governors" remote="maxregner" groups="maxregner,performance" revision="adaptive-cpu" />
-
-  <!-- maxregnerOS Storage Optimizations -->
-  <project path="maxregner/storage/trim" name="maxregneros/storage-trim" remote="maxregner" groups="maxregner,storage" revision="ufs-4.0" />
-  <project path="maxregner/storage/encryption" name="maxregneros/storage-encryption" remote="maxregner" groups="maxregner,storage" revision="hardware-accelerated" />
-
-  <!-- maxregnerOS Camera Enhancements -->
-  <project path="maxregner/camera/hal" name="maxregneros/camera-hal" remote="maxregner" groups="maxregner,camera" revision="dual-sensor-flip5" />
-  <project path="maxregner/camera/ai" name="maxregneros/camera-ai" remote="maxregner" groups="maxregner,camera" revision="scene-recognition" />
-
-  <!-- maxregnerOS Audio Enhancements -->
-  <project path="maxregner/audio/dolby" name="maxregneros/audio-dolby" remote="maxregner" groups="maxregner,audio" revision="atmos-virtualizer" />
-  <project path="maxregner/audio/effects" name="maxregneros/audio-effects" remote="maxregner" groups="maxregner,audio" revision="spatial-audio" />
-
-  <!-- maxregnerOS Security Features -->
-  <project path="maxregner/security/biometrics" name="maxregneros/security-biometrics" remote="maxregner" groups="maxregner,security" revision="side-fingerprint" />
-  <project path="maxregner/security/encryption" name="maxregneros/security-encryption" remote="maxregner" groups="maxregner,security" revision="file-based" />
-  <project path="maxregner/security/verifiedboot" name="maxregneros/security-verifiedboot" remote="maxregner" groups="maxregner,security" revision="avb-custom" />
-
-  <!-- maxregnerOS Update System -->
-  <project path="maxregner/ota/updater" name="maxregneros/ota-updater" remote="maxregner" groups="maxregner,ota" revision="delta-updates" />
-  <project path="maxregner/ota/verification" name="maxregneros/ota-verification" remote="maxregner" groups="maxregner,ota" revision="signature-v2" />
-
-  <!-- maxregnerOS Debugging Tools -->
-  <project path="maxregner/debug/profiler" name="maxregneros/debug-profiler" remote="maxregner" groups="maxregner,debug" revision="system-wide" />
-  <project path="maxregner/debug/logging" name="maxregneros/debug-logging" remote="maxregner" groups="maxregner,debug" revision="advanced-logger" />
-
-  <!-- maxregnerOS Vendor Extensions -->
-  <project path="maxregner/vendor/samsung" name="maxregneros/vendor-samsung" remote="maxregner-samsung" groups="maxregner,vendor" revision="oneui-compat" />
-  <project path="maxregner/vendor/qcom" name="maxregneros/vendor-qcom" remote="maxregner" groups="maxregner,vendor" revision="sm8550" />
-
-  <!-- maxregnerOS Compatibility Layer -->
-  <project path="maxregner/compat/oneui" name="maxregneros/compat-oneui" remote="maxregner" groups="maxregner,compat" revision="runtime-translation" />
-  <project path="maxregner/compat/gapps" name="maxregneros/compat-gapps" remote="maxregner" groups="maxregner,compat" revision="microg-integration" />
-
-  <!-- maxregnerOS Customization Engine -->
   <project path="maxregner/customize/themes" name="maxregneros/customize-themes" remote="maxregner" groups="maxregner,customize" revision="nebula-collection" />
   <project path="maxregner/customize/icons" name="maxregneros/customize-icons" remote="maxregner" groups="maxregner,customize" revision="vector-pack" />
   <project path="maxregner/customize/animations" name="maxregneros/customize-animations" remote="maxregner" groups="maxregner,customize" revision="quantum-physics" />
-
-  <!-- maxregnerOS Gesture Navigation -->
-  <project path="maxregner/navigation/gestures" name="maxregneros/navigation-gestures" remote="maxregner" groups="maxregner,navigation" revision="edge-sense" />
-  <project path="maxregner/navigation/onehand" name="maxregneros/navigation-onehand" remote="maxregner" groups="maxregner,navigation" revision="reachability" />
-
-  <!-- maxregnerOS Smart Features -->
-  <project path="maxregner/smart/assistant" name="maxregneros/smart-assistant" remote="maxregner" groups="maxregner,smart" revision="on-device-llm" />
-  <project path="maxregner/smart/suggestions" name="maxregneros/smart-suggestions" remote="maxregner" groups="maxregner,smart" revision="context-aware" />
-  <project path="maxregner/smart/automation" name="maxregneros/smart-automation" remote="maxregner" groups="maxregner,smart" revision="routines-plus" />
-
-  <!-- maxregnerOS Privacy Features -->
-  <project path="maxregner/privacy/dashboard" name="maxregneros/privacy-dashboard" remote="maxregner" groups="maxregner,privacy" revision="real-time-monitor" />
-  <project path="maxregner/privacy/permissions" name="maxregneros/privacy-permissions" remote="maxregner" groups="maxregner,privacy" revision="granular-control" />
-  <project path="maxregner/privacy/scramble" name="maxregneros/privacy-scramble" remote="maxregner" groups="maxregner,privacy" revision="clipboard-protection" />
-
-  <!-- maxregnerOS Gaming Mode -->
   <project path="maxregner/gaming/engine" name="maxregneros/gaming-engine" remote="maxregner" groups="maxregner,gaming" revision="performance-boost" />
   <project path="maxregner/gaming/overlay" name="maxregneros/gaming-overlay" remote="maxregner" groups="maxregner,gaming" revision="fps-counter" />
   <project path="maxregner/gaming/controls" name="maxregneros/gaming-controls" remote="maxregner" groups="maxregner,gaming" revision="touch-mapping" />
-
-  <!-- maxregnerOS Desktop Mode -->
   <project path="maxregner/desktop/dex" name="maxregneros/desktop-dex" remote="maxregner" groups="maxregner,desktop" revision="wireless-display" />
   <project path="maxregner/desktop/window" name="maxregneros/desktop-window" remote="maxregner" groups="maxregner,desktop" revision="freeform-enhanced" />
-
-  <!-- maxregnerOS Backup & Restore -->
+  <project path="maxregner/privacy/dashboard" name="maxregneros/privacy-dashboard" remote="maxregner" groups="maxregner,privacy" revision="real-time-monitor" />
+  <project path="maxregner/privacy/permissions" name="maxregneros/privacy-permissions" remote="maxregner" groups="maxregner,privacy" revision="granular-control" />
+  <project path="maxregner/privacy/scramble" name="maxregneros/privacy-scramble" remote="maxregner" groups="maxregner,privacy" revision="clipboard-protection" />
   <project path="maxregner/backup/cloud" name="maxregneros/backup-cloud" remote="maxregner" groups="maxregner,backup" revision="encrypted-sync" />
   <project path="maxregner/backup/local" name="maxregneros/backup-local" remote="maxregner" groups="maxregner,backup" revision="full-system" />
-
-  <!-- maxregnerOS Accessibility -->
   <project path="maxregner/a11y/vision" name="maxregneros/a11y-vision" remote="maxregner" groups="maxregner,a11y" revision="screen-reader-enhanced" />
   <project path="maxregner/a11y/motor" name="maxregneros/a11y-motor" remote="maxregner" groups="maxregner,a11y" revision="switch-access" />
   <project path="maxregner/a11y/cognitive" name="maxregneros/a11y-cognitive" remote="maxregner" groups="maxregner,a11y" revision="simplified-ui" />
-
-  <!-- maxregnerOS Weather & Environment -->
   <project path="maxregner/weather/engine" name="maxregneros/weather-engine" remote="maxregner" groups="maxregner,weather" revision="hyperlocal-forecast" />
   <project path="maxregner/weather/aqi" name="maxregneros/weather-aqi" remote="maxregner" groups="maxregner,weather" revision="real-time-sensors" />
-
-  <!-- maxregnerOS Health Integration -->
-  <project path="maxregner/health/sensors" name="maxregneros/health-sensors" remote="maxregner" groups="maxregner,health" revision=" samsung-health-bridge" />
+  <project path="maxregner/health/sensors" name="maxregneros/health-sensors" remote="maxregner" groups="maxregner,health" revision="samsung-health-bridge" />
   <project path="maxregner/health/fitness" name="maxregneros/health-fitness" remote="maxregner" groups="maxregner,health" revision="activity-recognition" />
-
-  <!-- maxregnerOS Emergency Features -->
   <project path="maxregner/safety/sos" name="maxregneros/safety-sos" remote="maxregner" groups="maxregner,safety" revision="panic-button" />
   <project path="maxregner/safety/crash" name="maxregneros/safety-crash" remote="maxregner" groups="maxregner,safety" revision="car-accident-detection" />
-
-  <!-- maxregnerOS Network Enhancements -->
   <project path="maxregner/net/vpn" name="maxregneros/net-vpn" remote="maxregner" groups="maxregner,net" revision="wireguard-kernel" />
   <project path="maxregner/net/dns" name="maxregneros/net-dns" remote="maxregner" groups="maxregner,net" revision="doh-dot" />
   <project path="maxregner/net/firewall" name="maxregneros/net-firewall" remote="maxregner" groups="maxregner,net" revision="per-app-control" />
-
-  <!-- maxregnerOS Developer Features -->
   <project path="maxregner/dev/root" name="maxregneros/dev-root" remote="maxregner" groups="maxregner,dev" revision="magisk-integrated" />
   <project path="maxregner/dev/terminal" name="maxregneros/dev-terminal" remote="maxregner" groups="maxregner,dev" revision="enhanced-shell" />
   <project path="maxregner/dev/logcat" name="maxregneros/dev-logcat" remote="maxregner" groups="maxregner,dev" revision="advanced-filtering" />
-
 </manifest>
