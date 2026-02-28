@@ -1132,7 +1132,6 @@
   <project path="device/samsung/sepolicy" name="samsung/device/sepolicy" remote="maxregner-samsung" groups="device,samsung,maxregner" revision="maxregneros-sepolicy" />
 
   <!-- Build System -->
-  <remove-project name="platform/build/soong" />
   <project path="build/soong" name="maxregneros/build/soong" groups="pdk,tradefed" remote="maxregner" revision="flip5-enhanced" >
     <linkfile src="root.bp" dest="Android.bp" />
     <linkfile src="bootstrap.bash" dest="bootstrap.bash" />
